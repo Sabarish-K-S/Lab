@@ -1,0 +1,27 @@
+      Ex2a_Formation_Of_Bus_Admittance_Matrices
+      
+%Formation of Admittance Bus Matrix
+nb=input('enter the no of buses');
+nl=input('enter the no of lines');
+disp('');
+for i=1:nl
+disp('enter the details of the lines');
+sb(i)=input('enter the starting bus no');
+eb(i)=input('enter the ending bus no');
+seriesz(i)=input('enter the value of series impedance of the bus');
+shunty(i)=input('enter the value of shunt admittance of the bus');
+disp('');
+end
+ybus=zeros(nb,nb);
+%calculation
+for i=1:nl
+seriesy(i)=1/seriesz(i);
+a=sb(i);
+b=eb(i);
+ybus(a,a)=ybus(a,a)+seriesy(i)+shunty(i);
+ybus(b,b)=ybus(b,b)+seriesy(i)+shunty(i);
+ybus(a,b)=ybus(a,b)-seriesy(i);
+ybus(b,a)=ybus(b,a)-seriesy(i);
+end
+%output display
+ybus

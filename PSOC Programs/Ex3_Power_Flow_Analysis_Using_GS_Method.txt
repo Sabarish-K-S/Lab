@@ -1,0 +1,50 @@
+          Ex3_Power_Flow_Analysis_Using_GS_Method
+          
+% Load Flow Solution by Gauss Seidel Method
+nb = input('Enter the number of buses: ');
+nl = input('Enter the number of lines: ');
+y = zeros(nl, nl);
+a = zeros(nl, nb);
+ybus = zeros(nb, nb);
+for i = 1:nl
+    ln = input('Enter line number: ');
+    y(ln, ln) = input('Enter line admittance: ');
+    sb = input('Enter the starting bus number: ');
+    eb = input('Enter the ending bus number: ');
+    if (sb ~= 0)
+        a(ln, sb) = -1;
+    end
+    if(eb ~= 0)
+        a(ln, eb) = 1;
+    end
+end
+ybus = a'* y * a;
+acc = input('Enter accelerating factor: ');
+for i = 1:nb
+    pg(i) = input('Enter generated active power: ');
+    qg(i) = input('enter gen reactive power');
+    pl(i) = input('enter load active power in mw');
+    ql(i) = input('enter load reactive power in mva');
+    v(i)  = input('enter input voltage');
+    p(i) = pg(i) - pl(i);
+    q(i) = qg(i) - ql(i);
+end
+cc = 1;
+k = 0;
+while cc > 0.1
+    for m = 2:nb
+        c(m) = 0;
+        for n = 1:nb
+            if(m ~= n)
+                c(m) = c(m) + (y(m,n) * v(n));
+            end
+        end
+        u(m) = v(m);
+        v(m) = (p(m) - q(m) - (c(m) * conj(v(m)))) /(y(m,m)*conj(v(m)));
+        v(m) = u(m) + (acc * (v(m) - u(m)));
+        cc(m) = abs(v(m) - u(m));
+    end
+    k = k + 1;
+end
+y
+cc

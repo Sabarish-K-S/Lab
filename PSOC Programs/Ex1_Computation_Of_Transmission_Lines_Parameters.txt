@@ -1,0 +1,50 @@
+     Ex1-Computation_Of_Transmission_Lines_Parameters
+
+ab=input('value of ab');
+bc=input('value of bc');
+ca=input('value of ca');
+pr=input('receving end power in mw');
+vr=input('receving end voltage in kv');
+pfr=input('receving end powerfactor');
+I=input('length of the line in km');
+r=input('resistance/ph/km');
+f=input('frequency');
+D=input('diameter in m');
+rad=D/2;
+newrad=(0.7788*rad);
+deq=(ab*bc*ca)^(1/3);
+L=2*10^(-7)*log(deq/newrad);
+c=(2*pi*8.854*10^-12)/log(deq/rad);
+XL=2*pi*f*L*I*1000;
+rnew=r*I;
+Z=rnew+i*(XL);
+Y=i*(2*pi*f*C*I*1000);
+A=1+((Y*Z)/2);
+D=A;
+B=Z;
+C=Y*(1+(Y*Z)/4);
+vrph=(vr*10^3)/1.732;
+irold=(pr*10^6)/(1.732*vr*10^3*.8);
+k=sin(acos(pfr));
+ir=irold*(pfr-(j*k));
+vs=((A*vrph)+(B*ir));
+is=((C*vrph)+(D*ir)); angle(vs);
+angle(is);
+f=angle(vs);
+u=angle(is);
+PFS=cos(f-u);
+eff=((pr*10^6)/(3*abs(vs)*abs(is)*PFS))*100;
+reg=(((abs(vs)/abs(A))-abs(vrph))/abs(vrph))*100;
+L
+C
+rnew
+A
+B
+C
+abs(vs)
+abs(is)
+angle(vs)*180/pi
+angle(is)*180/pi
+PFS
+eff
+reg

@@ -1,0 +1,126 @@
+      Ex2b_Formation_Of_Bus_Impedance_Matrices
+      
+% Formation of Impedance Bus Matrix by Bus Building Algorithm
+nb = input('Enter the number of buses: ');
+nl = input('Enter the number of lines: ');
+disp(' ');
+zn = zeros(nb, nb);   % Z-bus matrix
+ord = 0;              % Order of Z-bus
+for n = 1:nl
+    zo = zn;          % Store old Z-bus
+    disp('Enter 1 for line between new bus and reference bus');
+    disp('Enter 2 for line between existing bus and new bus');
+    disp('Enter 3 for line between existing bus and reference bus');
+    disp('Enter 4 for line between two existing buses');
+    ch = input('Enter the choice: ');
+    zb = input('Enter the branch impedance: ');
+    switch ch
+        % Case 1: New bus to reference bus
+        case 1
+            ord = ord + 1;
+            zn(ord, ord) = zb;
+        % Case 2: Existing bus to new bus
+        case 2
+            j = input('Enter the existing bus number: ');
+            ord = ord + 1;
+            for x = 1:ord-1
+                zn(x, ord) = zo(x, j);
+                zn(ord, x) = zn(x, ord);
+            end
+            zn(ord, ord) = zb + zo(j, j);
+        % Case 3: Existing bus to reference bus
+        case 3
+            j = input('Enter the existing bus number: ');
+            t = zo(j, j) + zb;
+            zt1 = zeros(ord, 1);
+            zt2 = zeros(1, ord);
+            for i = 1:ord
+                zt1(i) = zo(i, j);
+                zt2(i) = zo(j, i);
+            end
+            zn = zo - (zt1 * zt2) / t;
+        % Case 4: Line between two existing buses
+        case 4
+            i = input('Enter the first existing bus number: ');
+            j = input('Enter the second existing bus number: ');
+            t = zb + zo(i, i) + zo(j, j) - 2 * zo(i, j);
+            zt1 = zeros(ord, 1);
+            zt2 = zeros(1, ord);
+            for k = 1:ord
+                zt1(k) = zo(k, i) - zo(k, j);
+                zt2(k) = zo(i, k) - zo(j, k);
+            end
+            zn = zo - (zt1 * zt2) / t;
+        otherwise
+            disp('Invalid choice');
+    end
+    disp('Updated Z-bus matrix:');
+    disp(zn);
+end
+
+
+and also input need  to be given differently for this in the output:
+
+output 
+
+Enter the number of lines: 5
+ 
+Enter 1 for line between new bus and reference bus
+Enter 2 for line between existing bus and new bus
+Enter 3 for line between existing bus and reference bus
+Enter 4 for line between two existing buses
+Enter the choice: 1
+Enter the branch impedance: 1i*1.2
+Updated Z-bus matrix:
+   0.0000 + 1.2000i   0.0000 + 0.0000i   0.0000 + 0.0000i
+   0.0000 + 0.0000i   0.0000 + 0.0000i   0.0000 + 0.0000i
+   0.0000 + 0.0000i   0.0000 + 0.0000i   0.0000 + 0.0000i
+
+Enter 1 for line between new bus and reference bus
+Enter 2 for line between existing bus and new bus
+Enter 3 for line between existing bus and reference bus
+Enter 4 for line between two existing buses
+Enter the choice: 1
+Enter the branch impedance: 1i*1.5
+Updated Z-bus matrix:
+   0.0000 + 1.2000i   0.0000 + 0.0000i   0.0000 + 0.0000i
+   0.0000 + 0.0000i   0.0000 + 1.5000i   0.0000 + 0.0000i
+   0.0000 + 0.0000i   0.0000 + 0.0000i   0.0000 + 0.0000i
+
+Enter 1 for line between new bus and reference bus
+Enter 2 for line between existing bus and new bus
+Enter 3 for line between existing bus and reference bus
+Enter 4 for line between two existing buses
+Enter the choice: 2
+Enter the branch impedance: 1i*0.2
+Enter the existing bus number: 1
+Updated Z-bus matrix:
+   0.0000 + 1.2000i   0.0000 + 0.0000i   0.0000 + 1.2000i
+   0.0000 + 0.0000i   0.0000 + 1.5000i   0.0000 + 0.0000i
+   0.0000 + 1.2000i   0.0000 + 0.0000i   0.0000 + 1.4000i
+
+Enter 1 for line between new bus and reference bus
+Enter 2 for line between existing bus and new bus
+Enter 3 for line between existing bus and reference bus
+Enter 4 for line between two existing buses
+Enter the choice: 4
+Enter the branch impedance: 1i*0.15
+Enter the first existing bus number: 2
+Enter the second existing bus number: 3
+Updated Z-bus matrix:
+   0.0000 + 0.7279i   0.0000 + 0.5902i   0.0000 + 0.6492i
+   0.0000 + 0.5902i   0.0000 + 0.7623i   0.0000 + 0.6885i
+   0.0000 + 0.6492i   0.0000 + 0.6885i   0.0000 + 0.7574i
+
+Enter 1 for line between new bus and reference bus
+Enter 2 for line between existing bus and new bus
+Enter 3 for line between existing bus and reference bus
+Enter 4 for line between two existing buses
+Enter the choice: 4
+Enter the branch impedance: 1i*0.3
+Enter the first existing bus number: 1
+Enter the second existing bus number: 3
+Updated Z-bus matrix:
+   0.0000 + 0.7152i   0.0000 + 0.6061i   0.0000 + 0.6667i
+   0.0000 + 0.6061i   0.0000 + 0.7424i   0.0000 + 0.6667i
+   0.0000 + 0.6667i   0.0000 + 0.6667i   0.0000 + 0.7333i
