@@ -1,16 +1,12 @@
 % Load Flow Solution by Newton Raphson method
 clear all;
 clc
-
 nb = input('the number of buses\n');
 nl = input('the number of lines\n');
-
 sli = input('enter the details of series line impedance matrix\n');
 Ica = input('enter the detail of line charging admittance matrix\n');
-
 %% ---------------- Y BUS FORMATION ----------------
 y = zeros(nb,nb);
-
 for m = 1:nb
     for n = 1:nb
         if m ~= n && sli(m,n) ~= 0
@@ -18,13 +14,10 @@ for m = 1:nb
         end
     end
 end
-
 for m = 1:nb
     y(m,m) = -sum(y(m,:)) + sum(Ica(m,:));
 end
-
 ybus = y;
-
 %% ---------------- BUS INPUT DATA ----------------
 for j = 1:nb
     mag(j) = input(['enter the voltage magnitude of bus ', num2str(j), ': ']);
@@ -32,16 +25,13 @@ for j = 1:nb
     acp(j) = input(['enter the real power of bus ', num2str(j), ': ']);
     acq(j) = input(['enter the reactive power of bus ', num2str(j), ': ']);
 end
-
 mag = mag';
 th  = th';
 acp = acp';
 acq = acq';
-
 %% ---------------- POWER CALCULATION ----------------
 g = real(ybus);
 b = imag(ybus);
-
 for i = 1:nb
     pe(i) = 0;
     qu(i) = 0;
@@ -53,7 +43,6 @@ for i = 1:nb
             (g(i,j)*sin(th(i)-th(j)) - b(i,j)*cos(th(i)-th(j)));
     end
 end
-
 %% ---------------- JACOBIAN MATRIX ----------------
 for i = 2:nb
     for j = 2:nb
@@ -77,36 +66,60 @@ for i = 2:nb
         end
     end
 end
-
 ja1 = j1(2:nb,2:nb);
 ja2 = j2(2:nb,2:nb);
 ja3 = j3(2:nb,2:nb);
 ja4 = j4(2:nb,2:nb);
-
 jacob = [ja1 ja2; ja3 ja4];
-
 disp('the jacobian matrix is :');
 disp(jacob);
-
 %% ---------------- MISMATCH VECTOR ----------------
 delp = acp(2:nb) - pe(2:nb)';
 delq = acq(2:nb) - qu(2:nb)';
-
 mismatch = [delp; delq];
-
 %% ---------------- CORRECTION ----------------
 chan = jacob \ mismatch;
-
 chth = chan(1:nb-1);
 chma = chan(nb:2*(nb-1));
-
 %% ---------------- UPDATE ----------------
 th(2:nb)  = th(2:nb)  + chth;
 mag(2:nb) = mag(2:nb) + chma;
-
 %% ---------------- OUTPUT ----------------
 disp('the voltage magnitudes are:');
 disp(mag);
-
 disp('the phase values (radians) are:');
 disp(th);
+
+
+input need to be given ;
+the number of buses
+3
+the number of lines
+3
+
+enter the details of series line impedance matrix
+[0 0.02+0.08i 0.02+0.08i;
+ 0.02+0.08i 0 0.02+0.08i;
+ 0.02+0.08i 0.02+0.08i 0]
+
+enter the detail of line charging admittance matrix
+[0 0.02+0.08i 0.02+0.08i;
+ 0.02+0.08i 0 0.02+0.08i;
+ 0.02+0.08i 0.02+0.08i 0]
+enter the voltage magnitude of bus 1: 1.04
+enter the angle (radians) of bus 1: 0
+enter the real power of bus 1: 0
+enter the reactive power of bus 1: 0
+enter the voltage magnitude of bus 2: 1
+enter the angle (radians) of bus 2: 0
+enter the real power of bus 2: 0.5
+enter the reactive power of bus 2: 1
+enter the voltage magnitude of bus 3: 1.04
+enter the angle (radians) of bus 3: 0
+enter the real power of bus 3: -1.5
+enter the reactive power of bus 3: -0.6
+the jacobian matrix is :
+   24.4706  -12.2353    5.7271   -2.9412
+  -12.2353   24.9600   -3.0588    6.3185
+   -6.1176    3.0588   22.2682  -11.7647
+    3.0588   -6.2400  -12.2353   24.6084
