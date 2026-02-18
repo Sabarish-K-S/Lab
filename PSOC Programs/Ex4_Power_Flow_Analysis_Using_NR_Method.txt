@@ -1,0 +1,112 @@
+% Load Flow Solution by Newton Raphson method
+clear all;
+clc
+
+nb = input('the number of buses\n');
+nl = input('the number of lines\n');
+
+sli = input('enter the details of series line impedance matrix\n');
+Ica = input('enter the detail of line charging admittance matrix\n');
+
+%% ---------------- Y BUS FORMATION ----------------
+y = zeros(nb,nb);
+
+for m = 1:nb
+    for n = 1:nb
+        if m ~= n && sli(m,n) ~= 0
+            y(m,n) = -1/sli(m,n);
+        end
+    end
+end
+
+for m = 1:nb
+    y(m,m) = -sum(y(m,:)) + sum(Ica(m,:));
+end
+
+ybus = y;
+
+%% ---------------- BUS INPUT DATA ----------------
+for j = 1:nb
+    mag(j) = input(['enter the voltage magnitude of bus ', num2str(j), ': ']);
+    th(j)  = input(['enter the angle (radians) of bus ', num2str(j), ': ']);
+    acp(j) = input(['enter the real power of bus ', num2str(j), ': ']);
+    acq(j) = input(['enter the reactive power of bus ', num2str(j), ': ']);
+end
+
+mag = mag';
+th  = th';
+acp = acp';
+acq = acq';
+
+%% ---------------- POWER CALCULATION ----------------
+g = real(ybus);
+b = imag(ybus);
+
+for i = 1:nb
+    pe(i) = 0;
+    qu(i) = 0;
+    for j = 1:nb
+        pe(i) = pe(i) + mag(i)*mag(j)* ...
+            (g(i,j)*cos(th(i)-th(j)) + b(i,j)*sin(th(i)-th(j)));
+       
+        qu(i) = qu(i) + mag(i)*mag(j)* ...
+            (g(i,j)*sin(th(i)-th(j)) - b(i,j)*cos(th(i)-th(j)));
+    end
+end
+
+%% ---------------- JACOBIAN MATRIX ----------------
+for i = 2:nb
+    for j = 2:nb
+        if i ~= j
+            j1(i,j) = mag(i)*mag(j)* ...
+                (g(i,j)*sin(th(i)-th(j)) - b(i,j)*cos(th(i)-th(j)));
+           
+            j2(i,j) = mag(i)* ...
+                (g(i,j)*cos(th(i)-th(j)) + b(i,j)*sin(th(i)-th(j)));
+           
+            j3(i,j) = -mag(i)*mag(j)* ...
+                (g(i,j)*cos(th(i)-th(j)) + b(i,j)*sin(th(i)-th(j)));
+           
+            j4(i,j) = mag(i)* ...
+                (g(i,j)*sin(th(i)-th(j)) - b(i,j)*cos(th(i)-th(j)));
+        else
+            j1(i,j) = -qu(i) - b(i,i)*mag(i)^2;
+            j2(i,j) = pe(i)/mag(i) + g(i,i)*mag(i);
+            j3(i,j) = pe(i) - g(i,i)*mag(i)^2;
+            j4(i,j) = qu(i)/mag(i) - b(i,i)*mag(i);
+        end
+    end
+end
+
+ja1 = j1(2:nb,2:nb);
+ja2 = j2(2:nb,2:nb);
+ja3 = j3(2:nb,2:nb);
+ja4 = j4(2:nb,2:nb);
+
+jacob = [ja1 ja2; ja3 ja4];
+
+disp('the jacobian matrix is :');
+disp(jacob);
+
+%% ---------------- MISMATCH VECTOR ----------------
+delp = acp(2:nb) - pe(2:nb)';
+delq = acq(2:nb) - qu(2:nb)';
+
+mismatch = [delp; delq];
+
+%% ---------------- CORRECTION ----------------
+chan = jacob \ mismatch;
+
+chth = chan(1:nb-1);
+chma = chan(nb:2*(nb-1));
+
+%% ---------------- UPDATE ----------------
+th(2:nb)  = th(2:nb)  + chth;
+mag(2:nb) = mag(2:nb) + chma;
+
+%% ---------------- OUTPUT ----------------
+disp('the voltage magnitudes are:');
+disp(mag);
+
+disp('the phase values (radians) are:');
+disp(th);
