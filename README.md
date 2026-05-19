@@ -1,5 +1,6 @@
 1. Embedded Program Using Arduino To Control The Stepper Motor
 
+```
 int IN1 = 8;
 int IN2 = 9;
 int IN3 = 10;
@@ -32,3 +33,4 @@ void loop() {
     digitalWrite(IN4, HIGH);
     delay(10);
 }
+```
