@@ -1,6 +1,6 @@
 1. Embedded Program Using Arduino To Control The Stepper Motor
 
-```
+```cpp
 int IN1 = 8;
 int IN2 = 9;
 int IN3 = 10;
@@ -34,3 +34,16 @@ void loop() {
     delay(10);
 }
 ```
+2. Embedded Program Using Arduino For Timer Control Operation
+
+```cpp
+void setup(){
+    pinMode(LED_BUILTIN, OUTPUT);
+}
+void loop(){
+    digitalWrite(LED_BUILTIN, HIGH);
+    delay(2000);
+    digitalWrite(LED_BUILTIN, LOW);
+    delay(2000);
+}
+```    
