@@ -1,3 +1,15 @@
+SIMULATION LINKS
+
+Exp1. https://www.tinkercad.com/things/6xFrqPUL0Ny-esiot1?sharecode=P1_m40GIvhdkohsAmQ-l-AoWKXN5gxpXitxvYb4D6xg
+
+Exp2. https://www.tinkercad.com/things/l86myPLywhb-esiot2?sharecode=ZyyQBhFj7pvp3mdM56zFzBwFlYq2oXEnF_1Atf35QSc
+
+Exp3. https://www.tinkercad.com/things/3gYA6zScIQj-esiot3?sharecode=qJ3SE0KX4OT3SsLIUIu2CjtTh1RKPK-De9xkQsYtDxw
+
+Exp4. https://www.tinkercad.com/things/eXcNQQJ8q6X-esiot4?sharecode=FiRH2TBuVhN3kstcgTlcUNuKvFpe986X3ACFV9QpY8c
+
+Exp5. https://www.tinkercad.com/things/e7JgK7Tuztq-esiot5?sharecode=ryW9M2bTymNgV-lrC7EkOiiKCpgjlXlDbgFAw-CxVHw
+
 1. Embedded Program Using Arduino To Control The Stepper Motor
 
 ```cpp
